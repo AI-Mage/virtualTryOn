@@ -87,7 +87,7 @@ public class poseModel1 : MonoBehaviour
 
             if (part.transform.name == "Hip_Target")
                 part.transform.position = pose.Hip * k;
-            if (part.transform.name == "RL_Constraint")
+            if (part.transform.name == "RLeg_Constraint")
                 part.transform.position = pose.RLeg * k;
             if (part.transform.name == "Head_IK")
                 part.transform.position = pose.Head_IK * k;
