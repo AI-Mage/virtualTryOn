@@ -1,4 +1,4 @@
-# virtualTryOn
+# AI Mage Virtual Try On
 
 ## Demo of the Software
 https://www.youtube.com/watch?v=FFuUQjbQGec
