@@ -6,6 +6,7 @@ using System.Text;
 using UnityEngine;
 using SimpleJSON;
 using UnityEditor;
+using UnityEngine.UI;
 
 public class UpdatePose : MonoBehaviour
 {
@@ -24,6 +25,8 @@ public class UpdatePose : MonoBehaviour
 	Pose oldPose1, oldPose2;
 	Pose pose;
 	float t1, t2;
+
+	public RawImage img;
 	void Start()
     {
 		// Cache the desired joints of the body into Transform variables
@@ -86,7 +89,7 @@ public class UpdatePose : MonoBehaviour
             tex.SetPixels(webcamTexture.GetPixels());
 			tex.Apply();
 			EditorUtility.CompressTexture(tex, TextureFormat.RGB24, 0);
-
+			img.texture = tex;
 			byte[] bytes = tex.EncodeToPNG();
 			Debug.Log("Request sent");
 			StartCoroutine(webCamHandler.Instance.Post(URL, bytes, playPose, ExtrapolatePoints));
