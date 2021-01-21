@@ -88,7 +88,7 @@ public class UpdatePose : MonoBehaviour
             //update = 0.0f;
             tex.SetPixels(webcamTexture.GetPixels());
 			tex.Apply();
-			EditorUtility.CompressTexture(tex, TextureFormat.RGB24, 0);
+			//EditorUtility.CompressTexture(tex, TextureFormat.RGB24, 0);
 			img.texture = tex;
 			byte[] bytes = tex.EncodeToPNG();
 			Debug.Log("Request sent");
