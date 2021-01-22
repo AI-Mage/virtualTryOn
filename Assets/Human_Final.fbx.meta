@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 941558716ca400a4fb6370e1f929c1f2
+guid: c5d9f5737461f6f44b1d458dd8bb4d1b
 ModelImporter:
   serializedVersion: 19301
   internalIDToNameTable: []
@@ -7,13 +7,8 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: lambert4
-    second: {fileID: 2100000, guid: 02e524512ac0d444c8d5e7499418755b, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: lambert5
-    second: {fileID: 2100000, guid: 9aad9d9c84567ec4aaa1acf30c940cdc, type: 2}
+      name: Jeans
+    second: {fileID: 2100000, guid: 8c7a6d2bc2b45fe469393bb9c1f0b9d3, type: 2}
   materials:
     materialImportMode: 1
     materialName: 0
@@ -53,7 +48,7 @@ ModelImporter:
     importBlendShapes: 1
     importCameras: 1
     importLights: 1
-    fileIdsGeneration: 1
+    fileIdsGeneration: 2
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1

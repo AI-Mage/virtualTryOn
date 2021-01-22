@@ -16,9 +16,15 @@ public class UpdatePose : MonoBehaviour
     public bool is2D = false;
     public bool ExtrapolatePoints = false;
     public string URL = "localhost:8097";
-    WebCamTexture webcamTexture;
+
+	private bool camAvailable;
+	WebCamTexture webcamTexture;
     Texture2D tex;
-    private float update= 0 ;
+	public RawImage img;
+	public AspectRatioFitter fit;
+	public bool frontFacing;
+
+	private float update= 0 ;
     private Transform Hip_Target, RLeg_Constraint, Hip_Rotation, RHip, Head_IK, RL_Target, RL_Hint, LL_Target, LL_Hint, LH_Target, LH_Hint, RH_Target, RH_Hint, RShoulder, RHand_Constraint;
 	public float SpineRotationTolerance = 0.1f;
 	public float HipRotationTolerance = 0.1f;
@@ -26,7 +32,7 @@ public class UpdatePose : MonoBehaviour
 	Pose pose;
 	float t1, t2;
 
-	public RawImage img;
+	
 	void Start()
     {
 		// Cache the desired joints of the body into Transform variables
@@ -46,18 +52,21 @@ public class UpdatePose : MonoBehaviour
 		RH_Hint = GameObject.Find("RH_Hint").transform;
 		RShoulder = GameObject.Find("RShoulder").transform;
 		RHand_Constraint = GameObject.Find("RHand_Constraint").transform;
-		#endregion
+        #endregion
 
-		// Start web cam feed
-		webcamTexture = new WebCamTexture();
+        //original camera
+        // Start web cam feed
+        webcamTexture = new WebCamTexture();
         webcamTexture.Play();
         //update = 1000f;
         tex = new Texture2D(webcamTexture.width, webcamTexture.height, TextureFormat.RGB24, false);
-        
-
         //Application.Quit();
     }
-	private void Update()
+
+
+
+
+private void Update()
 	{
 		Application.targetFrameRate = FrameRate;
         update = Time.frameCount;
@@ -85,13 +94,13 @@ public class UpdatePose : MonoBehaviour
 		}
 		if (update % 4 == 0)
 		{
-            //update = 0.0f;
-            tex.SetPixels(webcamTexture.GetPixels());
+			//update = 0.0f;
+			tex.SetPixels(webcamTexture.GetPixels());
 			tex.Apply();
 			//EditorUtility.CompressTexture(tex, TextureFormat.RGB24, 0);
 			img.texture = tex;
 			byte[] bytes = tex.EncodeToPNG();
-			Debug.Log("Request sent");
+			Debug.Log("Request sent to "+URL);
 			StartCoroutine(webCamHandler.Instance.Post(URL, bytes, playPose, ExtrapolatePoints));
 			
 			
@@ -119,9 +128,9 @@ public class UpdatePose : MonoBehaviour
 			//k * pose.RHand.magnitude < (1 + SpineRotationTolerance) * RShoulder.position.magnitude)
 			RHand_Constraint.position = pose.RHand * k;
 		LH_Target.position = pose.LH_Target * k;
-		LH_Hint.position = pose.LH_Hint * k;
+		//LH_Hint.position = pose.LH_Hint * k;
 		RH_Target.position = pose.RH_Target * k;
-		RH_Hint.position = pose.RH_Hint * k;
+		//RH_Hint.position = pose.RH_Hint * k;
 		t2 = Time.time;
 		Debug.Log("Received Coordinates");
 		oldPose2 = pose;
