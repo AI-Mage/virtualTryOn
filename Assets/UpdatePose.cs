@@ -88,7 +88,7 @@ public class UpdatePose : MonoBehaviour
             //update = 0.0f;
             tex.SetPixels(webcamTexture.GetPixels());
 			tex.Apply();
-			//EditorUtility.CompressTexture(tex, TextureFormat.RGB24, 0);
+			EditorUtility.CompressTexture(tex, TextureFormat.RGB24, 0);
 			img.texture = tex;
 			byte[] bytes = tex.EncodeToPNG();
 			Debug.Log("Request sent");
@@ -105,15 +105,21 @@ public class UpdatePose : MonoBehaviour
 
 		if (is2D)
 			pose.Ensure2D();
-
+		
+		floorLimit = RL_Target.position.y;
 		Hip_Target.position = pose.Hip * k;
 		//if (k * pose.RLeg.magnitude >= RHip.position.magnitude)// &&
             //k * pose.RLeg.magnitude < (1 + HipRotationTolerance) * RHip.position.magnitude)
         RLeg_Constraint.position = pose.RLeg * k;
 		Head_IK.position = pose.Head_IK * k;
 		RL_Target.position = pose.RL_Target * k;
-		RL_Hint.position = pose.RL_Hint * k;
 		LL_Target.position = pose.LL_Target * k;
+        if (Hip_Target.position.y < 0)  // Fix for knee bending sitting postures.
+        {
+            RL_Target.SetPositionAndRotation(new Vector3(RL_Target.position.x, floorLimit - Hip_Target.position.y, RL_Target.position.z), RL_Target.rotation);
+            LL_Target.SetPositionAndRotation(new Vector3(LL_Target.position.x, floorLimit - Hip_Target.position.y, LL_Target.position.z), LL_Target.rotation);
+        }
+		RL_Hint.position = pose.RL_Hint * k;
 		LL_Hint.position = pose.LL_Hint * k;
 		//if (k * pose.RHand.magnitude >= RShoulder.position.magnitude &&
 			//k * pose.RHand.magnitude < (1 + SpineRotationTolerance) * RShoulder.position.magnitude)

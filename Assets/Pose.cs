@@ -29,6 +29,54 @@ public class Pose : MonoBehaviour
     public Vector3 RH_Hint;
     public Vector3 RH_Target;
 
+    private int frameCount;
+    public struct UnityHuman
+    {
+        internal static Vector3 RL_Target;
+        internal static Vector3 RL_Hint;
+        internal static Vector3 LL_Target;
+        internal static Vector3 LL_Hint;
+        internal static Vector3 RHip;
+        internal static Vector3 LH_Target;
+        internal static Vector3 LH_Hint;
+        internal static Vector3 RH_Target;
+        internal static Vector3 RH_Hint;
+        internal static Vector3 RShoulder;
+        internal static Vector3 Head_IK;
+    }
+    public struct scale
+    {
+        internal static float sc_RL_Target;
+        internal static float sc_RL_Hint;
+        internal static float sc_LL_Target;
+        internal static float sc_LL_Hint;
+        internal static float sc_RHip;
+        internal static float sc_LH_Target;
+        internal static float sc_LH_Hint;
+        internal static float sc_RH_Target;
+        internal static float sc_RH_Hint;
+        internal static float sc_RShoulder;
+        internal static float sc_Head_IK;
+    }
+    public float k; //scaling factor
+
+   
+    //public Pose(List<Vector3> humanJoints)
+    //{
+    //    //foreach(Vector3 joint in humanJoints)
+    //    UnityHuman.RL_Target = humanJoints[1];
+    //    UnityHuman.RL_Hint = humanJoints[2];
+    //    UnityHuman.LL_Target = humanJoints[3];
+    //    UnityHuman.LL_Hint = humanJoints[4];
+    //    UnityHuman.RHip = humanJoints[5];
+    //    UnityHuman.LH_Target = humanJoints[6];
+    //    UnityHuman.LH_Hint = humanJoints[7];
+    //    UnityHuman.RH_Target = humanJoints[8];
+    //    UnityHuman.RH_Hint = humanJoints[9];
+    //    UnityHuman.RShoulder = humanJoints[10];
+    //    UnityHuman.Head_IK = humanJoints[11];
+    //}
+
     public void Ensure2D()
     {
         //Fixing z components of all joints to a single value i.e zero
@@ -51,6 +99,7 @@ public class Pose : MonoBehaviour
         RH_Target.z = 0;
     }
 
+    
     public static Pose loadPose(string jsonData, string video)
     {
         jsonData = jsonData.Replace("\"", "");
@@ -115,7 +164,7 @@ public class Pose : MonoBehaviour
 
     }
 
-    public static Pose[] LoadPoseFromFile(string dataFileName, string video)
+    public static Pose[] LoadPoseFromFile(string dataFileName, string video, List<Vector3> humanJoints) //
     {
         string tempPath = Path.Combine(Application.dataPath, "");
         tempPath = Path.Combine(tempPath, dataFileName);
@@ -162,10 +211,69 @@ public class Pose : MonoBehaviour
             pose1[j].RHand = N[video][video1]["pelvis"]["spine"]["neck"]["r_shoulder"]["t"].AsArray;
             pose1[j].RH_Hint = N[video][video1]["pelvis"]["spine"]["neck"]["r_shoulder"]["r_elbow"]["t"].AsArray;
             pose1[j].RH_Target = N[video][video1]["pelvis"]["spine"]["neck"]["r_shoulder"]["r_elbow"]["r_wrist"]["t"].AsArray;
-
-        }
+         }
+        Pose.setPointsScale(pose1[5], humanJoints);
         return pose1;
     }
-}
 
+    public static void setPointsScale(Pose pose, List<Vector3> humanjoints)  //use incoming pose points in the first few frames to generate a scaling factor to multiply with the human joint positions
+    {
+        UnityHuman.RL_Target = humanjoints[0];
+        UnityHuman.RL_Hint = humanjoints[1];
+        UnityHuman.LL_Target = humanjoints[2];
+        UnityHuman.LL_Hint = humanjoints[3];
+        UnityHuman.RHip = humanjoints[4];
+        UnityHuman.LH_Target = humanjoints[5];
+        UnityHuman.LH_Hint = humanjoints[6];
+        UnityHuman.RH_Target = humanjoints[7];
+        UnityHuman.RH_Hint = humanjoints[8];
+        UnityHuman.RShoulder = humanjoints[9];
+        UnityHuman.Head_IK = humanjoints[10];
+        scale.sc_RL_Target = pose.RL_Target.magnitude / UnityHuman.RL_Target.magnitude;
+        scale.sc_RL_Hint = pose.RL_Hint.magnitude / UnityHuman.RL_Hint.magnitude;
+        scale.sc_LL_Target = pose.LL_Target.magnitude / UnityHuman.LL_Target.magnitude;
+        scale.sc_LL_Hint = pose.LL_Hint.magnitude - UnityHuman.LL_Hint.magnitude;
+        scale.sc_RHip = pose.RLeg.magnitude / UnityHuman.RHip.magnitude;
+        scale.sc_LH_Target = pose.LH_Target.magnitude / UnityHuman.LH_Target.magnitude;
+        scale.sc_LH_Hint = pose.LH_Hint.magnitude / UnityHuman.LH_Hint.magnitude;
+        scale.sc_RH_Target = pose.RH_Target.magnitude / UnityHuman.RH_Target.magnitude;
+        scale.sc_RH_Hint = pose.RH_Hint.magnitude / UnityHuman.RH_Hint.magnitude;
+        scale.sc_RShoulder = pose.RHand.magnitude / UnityHuman.RShoulder.magnitude;
+        scale.sc_Head_IK = pose.Head_IK.magnitude / UnityHuman.Head_IK.magnitude;
+    } // need to fix data handling between static methods and non static properties
+}
+//public Vector3 Hip;
+//public Vector3 RLeg;
+//public Vector3 RL_Hint;
+//public Vector3 RL_Target;
+//public Vector3 LLeg;
+//public Vector3 LL_Hint;
+//public Vector3 LL_Target;
+//public Vector3 Spine;
+//public Vector3 Thorax;
+////public Vector3 Neck;
+//public Vector3 Head_IK;
+//public Vector3 LHand;
+//public Vector3 LH_Hint;
+//public Vector3 LH_Target;
+//public Vector3 RHand;
+//public Vector3 RH_Hint;
+//public Vector3 RH_Target;
+
+//private int frameCount;
+//private struct UnityHuman
+//{
+//    Vector3 RL_Target;
+//    Vector3 RL_Hint;
+//    Vector3 LL_Target;
+//    Vector3 LL_Hint;
+//    Vector3 RHip;
+//    Vector3 LH_Target;
+//    Vector3 LH_Hint;
+//    Vector3 RH_Target;
+//    Vector3 RH_Hint;
+//    Vector3 RShoulder;
+//    Vector3 Head_IK;
+//}
+//public float k; //scaling factor
 
